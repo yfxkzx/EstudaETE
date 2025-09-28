@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Questões de Matemática</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagens/logoETE.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fafafa;
+      margin: 0;
+      padding-top: 70px;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .sair {
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #f44336;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .sair:hover {
+      background: #ffe5e5;
+    }
+
+    .titulo {
+      font-weight: 600;
+      font-size: 18px;
+      text-align: center;
+      color: #333;
+      flex: 1;
+    }
+
+    .cronometro {
+      font-size: 16px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px 50px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .texto-questao {
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 20px 0;
+      color: #555;
+      white-space: pre-line;
+    }
+
+    .enunciado2 {
+      font-weight: 600;
+      margin: 20px 0 15px 0;
+      color: #333;
+    }
+
+    img {
+      display: block;
+      margin: 25px auto;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    hr {
+      margin: 35px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .alternativa {
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .alternativa:hover {
+      border-color: #999;
+    }
+
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .correta {
+      border-color: #4caf50 !important;
+      background-color: #e7f9e9;
+    }
+
+    .errada {
+      border-color: #f44336 !important;
+      background-color: #ffe5e5;
+    }
+
+    .mensagem {
+      margin-top: 25px;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .acerto {
+      background-color: #e7f9e9;
+      color: #2e7d32;
+      border: 1px solid #4caf50;
+    }
+
+    .erro {
+      background-color: #ffe5e5;
+      color: #c62828;
+      border: 1px solid #f44336;
+    }
+
+    .resolucao {
+      margin-top: 30px;
+      background: #f9f9f9;
+      border-left: 4px solid #152b42;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .resolucao p {
+      white-space: pre-line;
+    }
+
+    button {
+      background: #152b42;
+      color: #fff;
+      padding: 14px 0;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #1e3a5c;
+    }
+
+    .botoes {
+      display: flex;
+      gap: 12px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body data-resultado="{{ resultado|lower if selecionada else '' }}">
+
+<div class="header">
+  <a href="#" class="sair" id="sair">X</a>
+  <div class="titulo">Questão de Matemática</div>
+  <div class="cronometro" id="cronometro">⏱ 00:00</div>
+</div>
+
+<div class="container">
+  {% if alternativas %}
+    <form method="POST">
+      <p>{{ enunciado }}</p>
+
+      {% if texto_questao %}
+        <p class="texto-questao">{{ texto_questao }}</p>
+      {% endif %}
+
+      {% if imagem_path %}
+        <img src="{{ imagem_path }}" alt="Imagem da questão">
+      {% endif %}
+
+      {% if enunciado2 %}
+        <p class="enunciado2">{{ enunciado2 }}</p>
+      {% endif %}
+
+      <hr>
+
+      {% for letra, texto in alternativas.items() %}
+        <label class="alternativa
+          {% if selecionada %}
+            {% if selecionada == letra and resposta_correta == letra %}correta
+            {% elif selecionada == letra and resposta_correta != letra %}errada
+            {% endif %}
+            {% if resposta_correta == letra %}correta{% endif %}
+          {% endif %}
+        ">
+          <input type="radio" name="alternativa" value="{{ letra }}" required {% if selecionada %}disabled{% endif %}>
+          <strong>{{ letra }})</strong>&nbsp;{{ texto }}
+        </label>
+      {% endfor %}
+
+      {% if not selecionada %}
+        <button type="submit">Responder questão</button>
+      {% else %}
+        <div class="mensagem {{ 'acerto' if resultado == 'acertou' else 'erro' }}">
+          Você {{ resultado }}! A resposta correta é: <strong>{{ resposta_correta }})</strong>
+        </div>
+
+        {% if resolucao %}
+          <div class="resolucao" id="resolucao">
+            <h3>Resolução:</h3>
+            <p>{{ resolucao.replace('\n', '<br>')|safe }}</p>
+            {% if assunto %}
+              <hr>
+              <p><strong>Assunto para revisar:</strong> {{ assunto }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="botoes">
+          <a href="{{ url_for('proxima_questao_matematica') }}">
+            <button type="button">Próxima Questão</button>
+          </a>
+        </div>
+      {% endif %}
+    </form>
+  {% else %}
+    <p style="text-align:center; font-weight:bold; color:red;">{{ erro or 'Nenhuma questão disponível' }}</p>
+  {% endif %}
+</div>
+
+<!-- Scripts -->
+<script>
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('scrollPosition', window.scrollY);
+  });
+
+  function zerarCronometro() {
+    segundos = 0;
+    sessionStorage.setItem('cronometroSegundos', '0');
+    renderizarTempo(segundos);
+  }
+
+  window.addEventListener('load', () => {
+    const scrollY = sessionStorage.getItem('scrollPosition');
+    if (scrollY !== null) {
+      window.scrollTo(0, parseInt(scrollY));
+      sessionStorage.removeItem('scrollPosition');
+    }
+
+    const resolucao = document.getElementById('resolucao');
+    if (resolucao) {
+      setTimeout(() => {
+        resolucao.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    }
+
+    if (performance.navigation.type === 1 && !window.location.href.includes('f5=1')) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('f5', '1');
+      sessionStorage.setItem('cronometroSegundos', '0');
+      window.location.replace(url);
+    }
+  });
+
+  let segundos = parseInt(sessionStorage.getItem('cronometroSegundos') || 0, 10);
+  const cronometroEl = document.getElementById('cronometro');
+
+  function renderizarTempo(seg) {
+    const min = String(Math.floor(seg / 60)).padStart(2, '0');
+    const s = String(seg % 60).padStart(2, '0');
+    cronometroEl.textContent = `⏱ ${min}:${s}`;
+  }
+
+  renderizarTempo(segundos);
+
+  const intervalo = setInterval(() => {
+    segundos++;
+    sessionStorage.setItem('cronometroSegundos', segundos);
+    renderizarTempo(segundos);
+  }, 1000);
+
+  document.getElementById('sair').addEventListener('click', (e) => {
+    e.preventDefault();
+    clearInterval(intervalo);
+    sessionStorage.removeItem('cronometroSegundos');
+    window.location.href = '/';
+  });
+
+  const resultado = document.body.dataset.resultado;
+  if (resultado === "acertou") {
+    let acertos = parseInt(localStorage.getItem("acertos") || "0");
+    localStorage.setItem("acertos", acertos + 1);
+  }
+</script>
+
+</body>
+</html>
