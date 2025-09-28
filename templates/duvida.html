@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='imagens/logoETE.png') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dúvida sobre o Curso</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #152b42;
+      --secondary-color: #88c3ff;
+      --accent-color: #f5a623;
+      --text-color: #0d1a2b;
+      --light-bg: #eef5fb;
+      --bg-color: #f8fafc;
+      --card-shadow: 0 2px 12px rgba(21, 43, 66, 0.1);
+      --card-hover-shadow: 0 6px 16px rgba(21, 43, 66, 0.15);
+      --border-radius: 10px;
+      --transition: all 0.3s ease;
+      --subtle-text: #7a8aa0;
+      --border-color: #e0e6ed;
+    }
+
+ 
+    header {
+      background: white;
+      box-shadow: 0 2px 8px rgba(21, 43, 66, 0.1);
+      padding: 10px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .logo a {
+      display: block;
+    }
+
+    .logo img {
+      height: 50px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover img {
+      transform: scale(1.05);
+    }
+
+    .nav-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-icon {
+      height: 36px;
+      width: 36px;
+      border-radius: 8px;
+      padding: 6px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-icon:hover {
+      background-color: var(--light-bg);
+      transform: translateY(-2px);
+    }
+
+    .nav-icon.active {
+      background-color: var(--secondary-color);
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .star-badge {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .star-icon {
+      height: 38px;
+      width: 38px;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .star-badge:hover .star-icon {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .star-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--accent-color);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      font-weight: 600;
+      text-decoration: none;
+      background-color: var(--light-bg);
+      color: var(--text-color);
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 8px 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background-color: #d4e5f8;
+      color: var(--primary-color);
+    }
+
+    body {
+      background: var(--bg-color);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-color);
+      margin: 0;
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .intro-section {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .intro-section h1 {
+      font-size: 2.2rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .intro-section p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-color);
+      max-width: 800px;
+      margin: 0 auto 25px;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-button, .scroll-button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .quiz-button:hover, .scroll-button:hover {
+      background-color: #2b435e;
+      transform: translateY(-2px);
+      box-shadow: var(--card-hover-shadow);
+    }
+
+    /* Estilos do Carrossel Melhorado */
+    .courses-carousel {
+      margin: 20px 0;
+    }
+
+    .courses-carousel h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .carousel-container {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      gap: 25px;
+      padding: 45px 75px;
+      margin: 0 -15px;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .card {
+      flex: 0 0 calc(100% - 30px);
+      scroll-snap-align: start;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 25px;
+      transition: var(--transition);
+      border: 1px solid var(--border-color);
+      margin: 0 5px;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        flex: 0 0 calc(50% - 30px);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .card {
+        flex: 0 0 calc(33.33% - 30px);
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--card-hover-shadow);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: var(--text-color);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: center;
+      margin-top: 25px;
+      gap: 12px;
+    }
+
+    .carousel-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #ddd;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .carousel-dot.active {
+      background-color: var(--primary-color);
+      transform: scale(1.2);
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+      transition: var(--transition);
+    }
+
+    .carousel-btn:hover {
+      background-color: var(--light-bg);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-btn i {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+    }
+
+    .carousel-btn.prev {
+      left: 0;
+    }
+
+    .carousel-btn.next {
+      right: 0;
+    }
+
+    .carousel-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: translateY(-50%);
+    }
+
+ 
+    .polo-section {
+      margin-top: 60px;
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .polo-section h2 {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 25px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .polo-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: var(--accent-color);
+    }
+
+    .polo-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 15px;
+    }
+
+    .polo-item {
+      padding: 18px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      border-radius: var(--border-radius);
+      background-color: var(--light-bg);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+    }
+
+    .polo-item::before {
+      content: '📍';
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .polo-item:hover {
+      background-color: #d4e5f8;
+      transform: translateY(-2px);
+    }
+
+    .polo-city {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-right: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 22px;
+      background: transparent;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: #555;
+    }
+
+    .stars-header {
+      margin-bottom: 15px;
+    }
+
+    .stars-count {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin: 8px 0;
+    }
+
+    .stars-subtitle {
+      color: var(--subtle-text);
+      font-size: 14px;
+    }
+
+    .stars-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .stars-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 15px;
+      width: 140px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .stars-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stars-card.portuguese {
+      border-top: 3px solid #f5a623;
+    }
+
+    .stars-card.math {
+      border-top: 3px solid #2b94e9;
+    }
+
+    .stars-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin: 0 0 8px;
+    }
+
+    .stars-card-value {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .stars-card-value.portuguese {
+      color: #f5a623;
+    }
+
+    .stars-card-value.math {
+      color: #2b94e9;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      header {
+        padding: 10px 20px;
+      }
+
+      .logo img {
+        height: 45px;
+      }
+
+      .nav-icon {
+        height: 34px;
+        width: 34px;
+      }
+
+      .star-icon {
+        height: 34px;
+        width: 34px;
+      }
+
+      .logout-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      body {
+        padding-top: 70px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .intro-section {
+        padding: 20px;
+      }
+
+      .intro-section h1 {
+        font-size: 1.8rem;
+      }
+
+      .carousel-container {
+        padding: 0 30px;
+      }
+      
+      .card {
+        flex: 0 0 85%;
+      }
+      
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .polo-list {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .quiz-button, .scroll-button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .intro-section h1 {
+        font-size: 1.5rem;
+      }
+      
+      .polo-section h2 {
+        font-size: 1.4rem;
+      }
+      
+      .carousel-container {
+        padding: 0 15px;
+      }
+      
+      .card {
+        flex: 0 0 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-section">
+      <a href="{{ url_for('estudos_bp.estudos') }}" title="Ir para estudos">
+        <img src="{{ url_for('static', filename='imagens/vetor estudoss.jpg') }}" alt="Estudos" class="nav-icon">
+      </a>
+      <a href="{{ url_for('duvida') }}" title="Tire suas dúvidas" class="active">
+        <img src="{{ url_for('static', filename='imagens/redes ou adm.jpg') }}" alt="Dúvidas" class="nav-icon">
+      </a>
+    </div>
+    
+    <div class="logo">
+      <a href="{{ url_for('home') }}" title="Página inicial">
+        <img src="{{ url_for('static', filename='imagens/logoETE.png') }}" alt="Logo ETE">
+      </a>
+    </div>
+    
+    {% if current_user.is_authenticated %}
+    <div class="user-actions">
+      <div class="star-badge" onclick="abrirModalAcertos()" title="Seu progresso">
+        <img src="{{ url_for('static', filename='imagens/vetor brilho.jpg') }}" alt="Progresso" class="star-icon">
+        <div class="star-count">{{ current_user.acertos_portugues + current_user.acertos_matematica }}</div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn" title="Sair da conta">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sair</span>
+      </a>
+    </div>
+    {% endif %}
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="intro-section">
+        <h1>Está com dúvida sobre qual curso escolher?</h1>
+        <p>Antes de fazer o quiz, confira quais são os cursos disponíveis na sua ETE na aba Polos e Cursos. Assim, você já sabe as opções que sua unidade oferece. Se sentir dúvida, acesse a página de Quizzes para descobrir qual curso técnico combina mais com seus gostos.</p>
+        <p>Além disso, você pode conhecer melhor cada curso lendo um pouco sobre eles na aba Cursos Técnicos do site.</p>
+        
+        <div class="action-buttons">
+          <a class="quiz-button" href="https://pt.quizur.com/studio/profile" target="_blank">
+            <i class="fas fa-question-circle"></i> Fazer o Quiz
+          </a>
+          <a class="scroll-button" href="#polos">
+            <i class="fas fa-map-marker-alt"></i> Ver Polos e Cursos
+          </a>
+        </div>
+      </section>
+
+      
+      <section class="courses-carousel">
+        <h2>Conheça Todos os Cursos Técnicos</h2>
+        
+        <div class="carousel-container">
+          <button class="carousel-btn prev" aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <div class="carousel">
+            <div class="card">
+              <h3>Técnico em Administração</h3>
+              <p>Forma profissionais capacitados para planejar, organizar e gerenciar recursos humanos, financeiros e materiais em empresas e organizações de diversos setores. O curso prepara para atuar em áreas como gestão financeira, marketing, recursos humanos, logística e empreendedorismo, desenvolvendo habilidades em liderança, tomada de decisão e uso de ferramentas administrativas.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Sistemas de Energia Renovável</h3>
+              <p>Capacita profissionais para projetar, instalar, operar e manter sistemas que utilizam fontes de energia limpa, como solar, eólica, biomassa e pequenas centrais hidrelétricas. O curso aborda conceitos de sustentabilidade, eficiência energética e tecnologias inovadoras, preparando para contribuir com a redução do impacto ambiental e a geração de energia sustentável.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Redes de Computadores</h3>
+              <p>Prepara para planejar, instalar, configurar, administrar e manter redes de computadores e sistemas de comunicação em diferentes ambientes. O curso abrange segurança da informação, infraestrutura de rede, protocolos, suporte técnico e monitoramento, formando profissionais aptos a garantir o bom funcionamento e a integridade dos sistemas computacionais.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Logística</h3>
+              <p>Forma profissionais para gerenciar o fluxo de materiais, produtos e informações, desde o ponto de origem até o consumidor final. O curso abrange transporte, armazenamento, controle de estoque, planejamento de rotas e otimização de processos, além de ensinar o uso de tecnologias para melhorar a eficiência operacional e reduzir custos.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Edificações</h3>
+              <p>Capacita para atuar no planejamento, execução e acompanhamento de obras civis, auxiliando engenheiros e arquitetos. O curso desenvolve habilidades em leitura e interpretação de projetos, cálculo de materiais, fiscalização de obras e aplicação das normas técnicas, com foco na segurança, qualidade e sustentabilidade das construções.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Turismo</h3>
+              <p>Prepara profissionais para planejar, organizar e promover atividades turísticas, valorizando o patrimônio cultural, histórico e natural. O curso aborda atendimento ao turista, desenvolvimento de roteiros, gestão de eventos e hospitalidade, capacitando para trabalhar em agências, hotéis, órgãos públicos e eventos.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Nutrição</h3>
+              <p>Aborda os princípios da alimentação saudável e do controle nutricional em diferentes contextos, como escolas, hospitais e empresas. O curso forma profissionais capazes de auxiliar no planejamento alimentar, avaliar dietas e promover a qualidade de vida por meio da nutrição.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Desenvolvimento de Sistemas</h3>
+              <p>Capacita para desenvolver, programar, testar e manter softwares e sistemas computacionais. O curso abrange linguagens de programação, banco de dados, análise de sistemas e metodologias ágeis, preparando para atuar em empresas de tecnologia, startups e desenvolvimento de aplicativos.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Eletroeletrônica</h3>
+              <p>Forma profissionais aptos a instalar, operar e manter sistemas elétricos e eletrônicos, aplicando conhecimentos de circuitos, automação e controle. O curso prepara para atuar em indústrias, empresas de manutenção e desenvolvimento tecnológico.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Agronegócio</h3>
+              <p>Foca na gestão, planejamento e operação das atividades agrícolas e pecuárias, desde a produção até a comercialização. O curso desenvolve habilidades em gestão financeira, controle de qualidade, marketing rural e sustentabilidade, preparando para atuar em cooperativas, empresas agroindustriais e consultorias.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Eventos</h3>
+              <p>Capacita para planejar, organizar e executar eventos sociais, culturais, esportivos e corporativos. O curso aborda logística, marketing, atendimento ao público e gestão financeira, preparando para atuar em empresas especializadas, espaços culturais e órgãos públicos.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Produção de Áudio e Vídeo</h3>
+              <p>Forma profissionais para atuar na gravação, edição e finalização de conteúdos audiovisuais, utilizando equipamentos e softwares específicos. O curso abrange técnicas de captação de áudio, iluminação, edição digital e produção para televisão, cinema e mídias digitais.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Rádio, TV e Internet</h3>
+              <p>Prepara para trabalhar na produção, edição e transmissão de conteúdos para rádio, televisão e plataformas digitais. O curso aborda técnicas de locução, produção editorial, operação de equipamentos e estratégias de comunicação audiovisual.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Marketing</h3>
+              <p>Envolve o estudo de estratégias para promover produtos, serviços e marcas, por meio de pesquisas, análise de mercado e comunicação. O curso prepara para planejar campanhas, gerenciar mídias sociais e analisar o comportamento do consumidor.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Alimentos</h3>
+              <p>Foca no controle de qualidade, processamento e conservação de alimentos, garantindo segurança e adequação às normas sanitárias. O curso capacita para atuar em indústrias, laboratórios e fiscalização sanitária.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Gastronomia</h3>
+              <p>Forma profissionais para atuar na cozinha, planejamento e elaboração de cardápios, técnicas culinárias e gestão de alimentos e bebidas. O curso prepara para trabalhar em restaurantes, hotéis e serviços de alimentação.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Design Gráfico</h3>
+              <p>Capacita para criar soluções visuais e comunicação gráfica, desenvolvendo identidades visuais, materiais publicitários e digitais. O curso aborda softwares de design, tipografia, composição e técnicas de impressão.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Farmácia</h3>
+              <p>Prepara para manipulação de medicamentos, atendimento farmacêutico e controle de qualidade em farmácias, drogarias e laboratórios.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Nutrição e Dietética</h3>
+              <p>Foca em práticas de nutrição clínica, dietoterapia e orientações alimentares especializadas para diferentes necessidades.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Segurança do Trabalho</h3>
+              <p>Capacita para identificar riscos, implementar medidas preventivas e garantir o cumprimento das normas de segurança em ambientes laborais.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Comércio</h3>
+              <p>Forma profissionais para atuar no setor comercial, gestão de vendas, atendimento ao cliente e controle de estoque.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Floricultura</h3>
+              <p>Capacita para produção, cultivo e comercialização de flores e plantas ornamentais, com técnicas de jardinagem e paisagismo.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Teatro</h3>
+              <p>Desenvolve habilidades em atuação, expressão corporal, iluminação e produção teatral para apresentações artísticas.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Artes Visuais</h3>
+              <p>Estimula a criação artística em diversas linguagens como pintura, desenho, escultura, preparando para exposições e atividades culturais.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Multimídia</h3>
+              <p>Prepara para produzir conteúdos digitais interativos, edição de vídeo, animação e design multimídia para diversas plataformas.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Publicidade</h3>
+              <p>Capacita para planejar e executar campanhas publicitárias, trabalhando com estratégias de comunicação e mídias diversas.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Programação de Jogos Digitais</h3>
+              <p>Foca no desenvolvimento, programação e design de jogos digitais para diferentes plataformas, integrando arte, lógica e tecnologia.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Design de Interiores</h3>
+              <p>Forma profissionais para planejar, projetar e decorar ambientes internos, combinando estética, funcionalidade e conforto.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Mecânica</h3>
+              <p>Capacita para manutenção, operação e fabricação de máquinas e sistemas mecânicos em indústrias e oficinas.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Mecatrônica</h3>
+              <p>Integra conhecimentos de mecânica, eletrônica e informática para desenvolver sistemas automáticos e robóticos.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Zootecnia</h3>
+              <p>Prepara para manejo, criação e melhoramento genético de animais, com foco na produção sustentável.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Meio Ambiente</h3>
+              <p>Capacita para atuar em preservação ambiental, gestão de recursos naturais, controle de poluição e sustentabilidade.</p>
+            </div>
+
+            <div class="card">
+              <h3>Técnico em Agropecuária</h3>
+              <p>Forma profissionais para produção, manejo e administração das atividades agrícolas e pecuárias, com foco em eficiência e sustentabilidade.</p>
+            </div>
+          </div>
+          
+          <button class="carousel-btn next" aria-label="Próximo">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <div class="carousel-nav">
+            
+          </div>
+        </div>
+      </section>
+
+     <section id="polos" class="polo-section">
+  <h2>Polos e Cursos Disponíveis</h2>
+  <div class="polo-list">
+    <div class="polo-item"><span class="polo-city">ABREU E LIMA</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">ARARIPINA</span> – Técnico em Administração e Técnico em Sistemas de Energia Renovável</div>
+    <div class="polo-item"><span class="polo-city">ARCOVERDE</span> – Técnico em Redes de Computadores e Técnico em Logística</div>
+    <div class="polo-item"><span class="polo-city">BARREIROS</span> – Técnico em Edificações e Técnico em Turismo</div>
+    <div class="polo-item"><span class="polo-city">BELÉM</span> – Técnico em Administração e Técnico em Nutrição</div>
+    <div class="polo-item"><span class="polo-city">BELO JARDIM</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">BEZERROS</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">BOM CONSELHO</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">BONITO</span> – Técnico em Administração e Técnico em Eletroeletrônica</div>
+    <div class="polo-item"><span class="polo-city">BUÍQUE</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">CABO (BR)</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Logística</div>
+    <div class="polo-item"><span class="polo-city">CABO (CENTRO)</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">CABROBÓ</span> – Técnico em Logística e Técnico em Agronegócio</div>
+    <div class="polo-item"><span class="polo-city">CAMARAGIBE</span> – Técnico em Eventos e Técnico em Logística</div>
+    <div class="polo-item"><span class="polo-city">CARNAÍBA</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">CARPINA</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">CARUARU (MFL)</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Marketing</div>
+    <div class="polo-item"><span class="polo-city">CARUARU (MN)</span> – Técnico em Produção de Áudio e Vídeo e Técnico em Rádio, TV e Internet</div>
+    <div class="polo-item"><span class="polo-city">ESCADA</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">FLORESTA</span> – Técnico em Design Gráfico e Técnico em Segurança do Trabalho</div>
+    <div class="polo-item"><span class="polo-city">GARANHUNS</span> – Técnico em Desenvolvimento de Sistemas ou Técnico em Logística</div>
+    <div class="polo-item"><span class="polo-city">GOIANA</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">GRAVATÁ</span> – Técnico em Redes de Computadores e Técnico em Administração</div>
+    <div class="polo-item"><span class="polo-city">IGARASSU</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Eletroeletrônica</div>
+    <div class="polo-item"><span class="polo-city">ITAÍBA</span> – Técnico em Administração e Técnico em Sistemas de Energia Renovável</div>
+    <div class="polo-item"><span class="polo-city">JABOATÃO (ETEMAC)</span> – Técnico em Logística e Técnico em Redes de Computadores</div>
+    <div class="polo-item"><span class="polo-city">JABOATÃO (IBURA)</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">JOÃO BEZERRA</span> – Técnico em Alimentos e Técnico em Gastronomia</div>
+    <div class="polo-item"><span class="polo-city">JOSÉ ALENCAR</span> – Técnico em Administração e Técnico em Design Gráfico</div>
+    <div class="polo-item"><span class="polo-city">LAJEDO</span> – Técnico em Design Gráfico e Técnico em Nutrição e Dietética</div>
+    <div class="polo-item"><span class="polo-city">LIMOEIRO</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Nutrição e Dietética</div>
+    <div class="polo-item"><span class="polo-city">MARIANO TEIXEIRA</span> – Técnico em Farmácia e Técnico em Nutrição e Dietética</div>
+    <div class="polo-item"><span class="polo-city">OLINDA (CHICO)</span> – Técnico em Farmácia e Técnico em Nutrição e Dietética</div>
+    <div class="polo-item"><span class="polo-city">PALMARES</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">PAUDALHO</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">PETROLINA</span> – Técnico em Comércio e Técnico em Floricultura</div>
+    <div class="polo-item"><span class="polo-city">PROFESSOR URBANO</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Logística</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (ÁGUA FRIA)</span> – Técnico em Teatro e Técnico em Artes Visuais</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (CÍCERO DIAS)</span> – Técnico em Multimídia e Técnico em Programação de Jogos Digitais</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (DOM BOSCO)</span> – Técnico em Marketing e Técnico em Publicidade</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (ETEASD)</span> – Técnico em Farmácia e Técnico em Nutrição e Dietética</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (ETEPAM)</span> – Técnico em Logística, Técnico em Mecânica e Técnico em Mecatrônica</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (ETEPLAD)</span> – Técnico em Administração e Técnico em Redes de Computadores</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (GINÁSIO)</span> – Técnico em Multimídia e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (MACAXEIRA)</span> – Técnico em Design Gráfico e Técnico em Design de Interiores</div>
+    <div class="polo-item"><span class="polo-city">RECIFE (PORTO DIGITAL)</span> – Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">SANTA CRUZ</span> – Técnico em Administração, Técnico em Desenvolvimento de Sistemas e Técnico em Redes de Computadores</div>
+    <div class="polo-item"><span class="polo-city">SÃO BENTO DO UNA</span> – Técnico em Desenvolvimento de Sistemas, Técnico em Redes de Computadores e Técnico em Zootecnia</div>
+    <div class="polo-item"><span class="polo-city">SÃO JOSÉ DO BELMONTE</span> – Técnico em Administração e Técnico em Redes de Computadores</div>
+    <div class="polo-item"><span class="polo-city">SÃO JOSÉ DO EGITO</span> – Técnico em Administração e Técnico em Meio Ambiente</div>
+    <div class="polo-item"><span class="polo-city">SÃO LOURENÇO DA MATA</span> – Técnico em Administração e Técnico em Redes de Computadores</div>
+    <div class="polo-item"><span class="polo-city">SERRA TALHADA</span> – Técnico em Logística e Técnico em Edificações</div>
+    <div class="polo-item"><span class="polo-city">SERTÂNIA</span> – Técnico em Redes de Computadores e Técnico em Agropecuária</div>
+    <div class="polo-item"><span class="polo-city">SURUBIM</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">TIMBAÚBA</span> – Técnico em Administração e Técnico em Desenvolvimento de Sistemas</div>
+    <div class="polo-item"><span class="polo-city">VITÓRIA</span> – Técnico em Desenvolvimento de Sistemas e Técnico em Logística</div>
+  </div>
+</section>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const carousel = document.querySelector('.carousel');
+      const cards = document.querySelectorAll('.card');
+      const prevBtn = document.querySelector('.carousel-btn.prev');
+      const nextBtn = document.querySelector('.carousel-btn.next');
+      const dotsContainer = document.querySelector('.carousel-nav');
+      
+      
+      const cardStyle = window.getComputedStyle(cards[0]);
+      const cardMargin = parseFloat(cardStyle.marginLeft) + parseFloat(cardStyle.marginRight);
+      const cardWidth = cards[0].offsetWidth + cardMargin;
+      let maxScroll = carousel.scrollWidth - carousel.clientWidth;
+      
+      function updateMaxScroll() {
+        maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        updateButtons();
+      }
+      
+      function createDots() {
+        const visibleCards = Math.floor(carousel.clientWidth / cardWidth);
+        const totalDots = Math.ceil(cards.length / visibleCards);
+        
+        dotsContainer.innerHTML = '';
+        
+        for (let i = 0; i < totalDots; i++) {
+          const dot = document.createElement('div');
+          dot.classList.add('carousel-dot');
+          if (i === 0) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+            scrollToPosition(i * carousel.clientWidth);
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+      
+      function updateDots() {
+        const dots = document.querySelectorAll('.carousel-dot');
+        const activeDot = Math.round(carousel.scrollLeft / carousel.clientWidth);
+        
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === activeDot);
+        });
+      }
+      
+      function scrollToPosition(position) {
+        const maxPosition = carousel.scrollWidth - carousel.clientWidth;
+        const adjustedPosition = Math.min(position, maxPosition);
+        
+        carousel.scrollTo({
+          left: adjustedPosition,
+          behavior: 'smooth'
+        });
+      }
+      
+      function updateButtons() {
+        prevBtn.classList.toggle('disabled', carousel.scrollLeft <= 10);
+        nextBtn.classList.toggle('disabled', carousel.scrollLeft >= maxScroll - 10);
+      }
+      
+      prevBtn.addEventListener('click', () => {
+        const newPosition = carousel.scrollLeft - carousel.clientWidth;
+        scrollToPosition(Math.max(0, newPosition));
+      });
+      
+      nextBtn.addEventListener('click', () => {
+        const newPosition = carousel.scrollLeft + carousel.clientWidth;
+        scrollToPosition(Math.min(maxScroll, newPosition));
+      });
+      
+      carousel.addEventListener('scroll', () => {
+        updateDots();
+        updateButtons();
+      });
+      
+      window.addEventListener('resize', () => {
+        updateMaxScroll();
+        createDots();
+      });
+      
+     
+      createDots();
+      updateButtons();
+    });
+
+    function abrirModalAcertos() {
+   
+    }
+  </script>
+</body>
+</html>
