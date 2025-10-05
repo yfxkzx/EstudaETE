@@ -9,7 +9,7 @@ materiais_estudo = [
     {
         "materia": "Português",
         "assunto": "Interpretação de Texto",
-        "video": "https://www.youtube.com/playlist?list=PL-Portugues",
+        "video": "https://www.youtube.com/watch?v=fAzrUi70Po0&list=PLnK301if6Pky33hlGNV5pPxfDY7BIZps3",
         "exercicios": [
             "https://www.todamateria.com.br/exercicios-de-interpretacao-de-texto/",
             "https://exercicios.brasilescola.uol.com.br/exercicios-redacao/exercicios-sobre-interpretacao-texto.htm"
