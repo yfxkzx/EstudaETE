@@ -155,7 +155,7 @@
       padding-left: 0;
     }
 
-    /* Modal de tempo esgotado */
+    
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -245,7 +245,7 @@
 </head>
 <body>
 <div class="header">
-  <a href="{{ url_for('finalizar_simulado') }}" class="sair">X</a>
+  <a href="{{ url_for('home') }}" class="sair">X</a>
   <div class="titulo">Simulado</div>
   <div class="cronometro" id="cronometro">
     <img src="{{ url_for('static', filename='imagens/ampulheta.jpg') }}" alt="Ampulheta">
@@ -389,7 +389,7 @@
         }
       });
 
-      // Aplica marcações de correção
+ 
       alternativas.forEach(a => {
         const letra = a.dataset.letra;
         if (letra === correta) {

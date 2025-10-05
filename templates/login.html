@@ -321,7 +321,7 @@
   </style>
 </head>
 <body>
-  <!-- Mensagens Flash -->
+ 
   <div class="flash-messages">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -354,7 +354,7 @@
         <div class="toggle-btn" id="registerBtn">Criar Conta</div>
       </div>
       
-      <!-- Formulário de Login -->
+      
       <form class="auth-form active" id="loginForm" method="POST" action="{{ url_for('login') }}">
         <div class="form-group">
           <label for="loginNome">Nome de Usuário</label>
@@ -374,7 +374,7 @@
         <div class="credentials-error" id="loginCredentialsError">Nome de usuário ou senha incorretos.</div>
       </form>
       
-      <!-- Formulário de Registro -->
+     
       <form class="auth-form" id="registerForm" method="POST" action="{{ url_for('registrar') }}">
         <div class="form-group">
           <label for="registerNome">Nome de Usuário</label>
@@ -397,7 +397,7 @@
   </div>
 
   <script>
-    // Toggle entre Login e Registro
+
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
     const toggleSlider = document.getElementById('toggleSlider');
@@ -420,7 +420,7 @@
       loginForm.classList.remove('active');
     });
     
-    // Validação de formulários
+   
     const loginFormEl = document.getElementById('loginForm');
     const registerFormEl = document.getElementById('registerForm');
     const loginError = document.getElementById('loginError');
@@ -448,7 +448,7 @@
       }
     });
     
-    // Esconder mensagens de erro ao digitar
+
     const inputs = document.querySelectorAll('.form-input');
     inputs.forEach(input => {
       input.addEventListener('input', () => {
@@ -459,7 +459,7 @@
       });
     });
     
-    // Fechar mensagens automaticamente após 5 segundos
+
     document.addEventListener('DOMContentLoaded', function() {
       setTimeout(function() {
         document.querySelectorAll('.alert').forEach(function(alert) {
@@ -467,38 +467,37 @@
         });
       }, 5000);
       
-      // Verificar se há erros de login ou registro e exibir na página atual
       const urlParams = new URLSearchParams(window.location.search);
       const loginErrorParam = urlParams.get('login_error');
       const registerErrorParam = urlParams.get('register_error');
       
       if (loginErrorParam === 'true') {
-        // Exibir mensagem de erro de credenciais no login
+    
         loginCredentialsError.style.display = 'block';
         loginCredentialsError.textContent = 'Nome de usuário ou senha incorretos.';
         
-        // Esconder a mensagem após 5 segundos
+   
         setTimeout(() => {
           loginCredentialsError.style.display = 'none';
         }, 5000);
       }
       
       if (registerErrorParam) {
-        // Exibir mensagem de erro no registro
+
         registerCredentialsError.style.display = 'block';
         registerCredentialsError.textContent = decodeURIComponent(registerErrorParam);
         
-        // Mudar para a aba de registro
+
         registerBtn.click();
         
-        // Esconder a mensagem após 5 segundos
+   
         setTimeout(() => {
           registerCredentialsError.style.display = 'none';
         }, 5000);
       }
     });
     
-    // Fechar mensagem ao clicar no X
+
     document.querySelectorAll('.alert .close').forEach(function(btn) {
       btn.addEventListener('click', function() {
         this.parentElement.style.display = 'none';
