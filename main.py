@@ -17,9 +17,7 @@ app = Flask(__name__)
 database_url = os.environ.get('DATABASE_URL')
 
 if database_url:
-    if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url.replace('postgres://', 'postgresql://', 1)
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
@@ -49,34 +47,6 @@ def load_user(user_id):
         return Usuario.query.get(int(user_id))
     except:
         return None
-
-@app.route('/teste-banco')
-def teste_banco():
-    try:
-        db.create_all()
-        total_usuarios = Usuario.query.count()
-        db_url = app.config['SQLALCHEMY_DATABASE_URI']
-        
-        if '@' in db_url:
-            db_url_seguro = db_url.split('@')[0] + '@***' 
-        else:
-            db_url_seguro = db_url
-        
-        return f"""
-        <h1>✅ Banco Conectado com Sucesso!</h1>
-        <p>Total de usuários no banco: {total_usuarios}</p>
-        <p>Database: {db_url_seguro}</p>
-        <p>Status: 🟢 FUNCIONANDO</p>
-        <br>
-        <p><a href="/registrar">👉 Teste criar uma conta</a></p>
-        <p><a href="/">Voltar para Home</a></p>
-        """
-    except Exception as e:
-        return f"""
-        <h1>❌ Erro no Banco</h1>
-        <p><strong>Erro:</strong> {str(e)}</p>
-        <p><strong>Database URL:</strong> {app.config.get('SQLALCHEMY_DATABASE_URI', 'Não configurado')}</p>
-        """
 
 @app.route('/')
 def home():
@@ -449,6 +419,9 @@ def perfil():
 @app.route('/conteudos')
 def conteudos():
     return render_template('conteudos.html')
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     with app.app_context():
