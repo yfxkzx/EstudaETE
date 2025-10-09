@@ -13,11 +13,14 @@ import os
 from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = 'lancode'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+# CONFIGURAÇÕES PARA DEPLOY
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'chave-desenvolvimento-temporaria')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///database.db').replace('postgres://', 'postgresql://', 1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
+# Inicializar db
 db.init_app(app)
 
 login_manager = LoginManager(app)
@@ -65,6 +68,7 @@ def login():
     if user and user.senha == senha_hash:
         login_user(user, remember=True)
         session.permanent = True
+        flash(f'Bem-vindo de volta, {user.nome}!', 'success')
         return redirect(url_for('home'))
     else:
         session['login_error'] = 'Nome de usuário ou senha incorretos.'
@@ -105,7 +109,8 @@ def registrar():
     
     except Exception as e:
         db.session.rollback()
-        session['register_error'] = 'Erro ao criar conta.'
+        print(f"Erro ao criar conta: {str(e)}")  # Log para debug
+        session['register_error'] = 'Erro ao criar conta. Tente novamente.'
         return redirect(url_for('login'))
 
 app.register_blueprint(estudos_bp)
@@ -338,6 +343,7 @@ def limpar_sessao():
 def logout():
     logout_user()
     session.clear()
+    flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('home'))
 
 @app.route('/simulado', methods=['GET', 'POST'])
@@ -406,6 +412,7 @@ def duvida():
     return render_template('duvida.html')
 
 @app.route('/perfil')
+@login_required
 def perfil():
     return render_template('perfil.html')
 
@@ -413,7 +420,15 @@ def perfil():
 def conteudos():
     return render_template('conteudos.html')
 
+# Comando para criar as tabelas
+@app.cli.command("create-db")
+def create_db():
+    """Cria as tabelas do banco de dados"""
+    db.create_all()
+    print("Banco de dados criado com sucesso!")
+
 if __name__ == "__main__":
     with app.app_context():
+        # Criar tabelas se não existirem
         db.create_all()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
