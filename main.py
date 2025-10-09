@@ -14,13 +14,19 @@ from datetime import timedelta
 
 app = Flask(__name__)
 
-# CONFIGURAÇÕES PARA DEPLOY
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'chave-desenvolvimento-temporaria')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///database.db').replace('postgres://', 'postgresql://', 1)
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'lancode')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
-# Inicializar db
 db.init_app(app)
 
 login_manager = LoginManager(app)
@@ -43,6 +49,34 @@ def load_user(user_id):
         return Usuario.query.get(int(user_id))
     except:
         return None
+
+@app.route('/teste-banco')
+def teste_banco():
+    try:
+        db.create_all()
+        total_usuarios = Usuario.query.count()
+        db_url = app.config['SQLALCHEMY_DATABASE_URI']
+        
+        if '@' in db_url:
+            db_url_seguro = db_url.split('@')[0] + '@***' 
+        else:
+            db_url_seguro = db_url
+        
+        return f"""
+        <h1>✅ Banco Conectado com Sucesso!</h1>
+        <p>Total de usuários no banco: {total_usuarios}</p>
+        <p>Database: {db_url_seguro}</p>
+        <p>Status: 🟢 FUNCIONANDO</p>
+        <br>
+        <p><a href="/registrar">👉 Teste criar uma conta</a></p>
+        <p><a href="/">Voltar para Home</a></p>
+        """
+    except Exception as e:
+        return f"""
+        <h1>❌ Erro no Banco</h1>
+        <p><strong>Erro:</strong> {str(e)}</p>
+        <p><strong>Database URL:</strong> {app.config.get('SQLALCHEMY_DATABASE_URI', 'Não configurado')}</p>
+        """
 
 @app.route('/')
 def home():
@@ -68,7 +102,6 @@ def login():
     if user and user.senha == senha_hash:
         login_user(user, remember=True)
         session.permanent = True
-        flash(f'Bem-vindo de volta, {user.nome}!', 'success')
         return redirect(url_for('home'))
     else:
         session['login_error'] = 'Nome de usuário ou senha incorretos.'
@@ -109,8 +142,7 @@ def registrar():
     
     except Exception as e:
         db.session.rollback()
-        print(f"Erro ao criar conta: {str(e)}")  # Log para debug
-        session['register_error'] = 'Erro ao criar conta. Tente novamente.'
+        session['register_error'] = 'Erro ao criar conta.'
         return redirect(url_for('login'))
 
 app.register_blueprint(estudos_bp)
@@ -343,7 +375,6 @@ def limpar_sessao():
 def logout():
     logout_user()
     session.clear()
-    flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('home'))
 
 @app.route('/simulado', methods=['GET', 'POST'])
@@ -412,7 +443,6 @@ def duvida():
     return render_template('duvida.html')
 
 @app.route('/perfil')
-@login_required
 def perfil():
     return render_template('perfil.html')
 
@@ -420,15 +450,7 @@ def perfil():
 def conteudos():
     return render_template('conteudos.html')
 
-# Comando para criar as tabelas
-@app.cli.command("create-db")
-def create_db():
-    """Cria as tabelas do banco de dados"""
-    db.create_all()
-    print("Banco de dados criado com sucesso!")
-
 if __name__ == "__main__":
     with app.app_context():
-        # Criar tabelas se não existirem
         db.create_all()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
